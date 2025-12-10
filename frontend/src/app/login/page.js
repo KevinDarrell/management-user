@@ -3,15 +3,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import api from '@/lib/axios';
 import Link from 'next/link';
 import { useTheme } from '@/context/ThemeContext';
+import AuthService from '@/services/auth.service';
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ username: '', password: '' });
-  
   const { theme, toggleTheme } = useTheme();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,10 +19,11 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await api.post('/auth/login', form);
-      const { token, user } = response.data.data;
+      const { token, user } = await AuthService.login(form);
+      
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+      
       toast.success(`Welcome back, ${user.username}!`);
       router.push('/dashboard'); 
     } catch (error) {
@@ -35,13 +35,11 @@ export default function LoginPage() {
   };
 
   const bgMain = theme === 'dark' ? '#0f172a' : '#f8fafc'; 
-  
- 
   const bgCard = theme === 'dark' ? '#1e293b' : '#ffffff'; 
   const borderCard = theme === 'dark' ? '#334155' : 'transparent';
 
   return (
-    <div className="container-fluid vh-100 overflow-hidden transition-colors"
+    <div className="container-fluid vh-100 overflow-hidden transition-colors" 
          style={{ backgroundColor: bgMain }}>
       
       <motion.button
@@ -54,16 +52,14 @@ export default function LoginPage() {
              borderColor: borderCard,
              color: theme === 'dark' ? '#f1f5f9' : '#334155' 
          }}
-      >
+        >
           {theme === 'light' ? <i className="bi bi-moon-stars-fill"></i> : <i className="bi bi-sun-fill text-warning"></i>}
-      </motion.button>
+          </motion.button>
 
-      <div className="row h-100">
-
-        <div className="col-md-6 d-none d-md-flex flex-column justify-content-between p-5 position-relative overflow-hidden transition-colors"
+          <div className="row h-100">
+            <div className="col-md-6 d-none d-md-flex flex-column justify-content-between p-5 position-relative overflow-hidden transition-colors"
              style={{ backgroundColor: bgMain }}> 
-
-           <motion.div 
+            <motion.div 
               animate={{ scale: [1, 1.2, 1], x: [0, 50, 0] }}
               transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
               className="position-absolute rounded-circle"

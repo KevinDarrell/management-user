@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap'; 
 import { toast } from 'sonner';
-import api from '@/lib/axios';
+import EmployeeService from '@/services/employee.service';
 import { useNotification } from '@/context/NotificationContext';
 
 export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToEdit }) {
@@ -16,6 +16,8 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
     phone: '',
     photo: null
   });
+
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     if (show) {
@@ -54,47 +56,30 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
     }
   };
 
-  const { addNotification } = useNotification();
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const payload = new FormData();
-    payload.append('name', formData.name);
-    payload.append('position', formData.position);
-    payload.append('phone', formData.phone);
-    payload.append('department', formData.department || 'General'); 
-    
-    if (formData.photo) {
-      payload.append('photo', formData.photo);
-    }
+    try {
+      const payload = new FormData();
+      payload.append('name', formData.name);
+      payload.append('position', formData.position);
+      payload.append('phone', formData.phone);
+      payload.append('department', formData.department || 'General');
+      if (formData.photo) payload.append('photo', formData.photo);
 
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data', 
-      },
-    };
-
-    if (employeeToEdit) {
-      await api.put(`/employees/${employeeToEdit.id}`, payload, config);
-      toast.success('Employee updated successfully!');
-      addNotification(
-            'Employee Updated', 
-            `${formData.name} details have been updated.`, 
-            'info'
-        );
-    } else {
-   
-      await api.post('/employees', payload, config);
-      toast.success('New employee added!');
-      addNotification(
-            'New Employee Added', 
-            `${formData.name} has joined the ${formData.department || 'General'} department.`, 
-            'success'
-        );
-    }
+      if (employeeToEdit) {
+        await EmployeeService.update(employeeToEdit.id, payload);
+        
+        toast.success('Employee updated successfully!');
+        addNotification('Employee Updated', `${formData.name} details have been updated.`, 'info');
+      } else {
+       
+        await EmployeeService.create(payload);
+        
+        toast.success('New employee added!');
+        addNotification('New Employee Added', `${formData.name} has joined the team.`, 'success');
+      }
 
     onSuccess();
     onHide();

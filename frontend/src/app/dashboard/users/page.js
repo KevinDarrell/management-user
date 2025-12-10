@@ -1,22 +1,19 @@
 'use client';
 import { useState } from 'react';
 import useSWR from 'swr';
-import api from '@/lib/axios';
+import UserService from '@/services/user.service';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConfirmDialog from '@/components/ConfirmDialog';
 
-const fetcher = url => api.get(url).then(res => res.data.data);
+const fetcher = () => UserService.getAll();
 
 export default function UserManagementPage() {
 
   const { data: users, error, mutate } = useSWR('/users', fetcher);
-
-
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
   const [dialog, setDialog] = useState({
     isOpen: false,
     title: '',
@@ -27,12 +24,10 @@ export default function UserManagementPage() {
 
   const closeDialog = () => setDialog({ ...dialog, isOpen: false });
 
-
   const filteredUsers = users?.filter(user => 
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
-
 
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -56,7 +51,7 @@ export default function UserManagementPage() {
       onConfirm: async () => {
         try {
           closeDialog();
-          await api.patch(`/users/${user.id}/status`, { isActive: !user.isActive });
+          await UserService.updateStatus(user.id, !user.isActive);
           mutate();
           toast.success(`User ${user.username} has been ${action}d.`);
         } catch (err) {

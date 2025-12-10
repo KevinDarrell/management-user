@@ -1,26 +1,22 @@
 'use client';
 import { useState } from 'react';
 import useSWR from 'swr';
-import api from '@/lib/axios';
+import EmployeeService from '@/services/employee.service';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import EmployeeCard from '@/components/EmployeeCard'; 
 import EmployeeFormModal from '@/components/EmployeeFormModal';
 
-const fetcher = url => api.get(url).then(res => res.data.data);
+const fetcher = () => EmployeeService.getAll();
 
 export default function EmployeePage() {
   const { data: employees, error, mutate } = useSWR('/employees', fetcher);
-
-  // --- STATES UTAMA ---
   const [viewMode, setViewMode] = useState('grid'); 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDept, setFilterDept] = useState('All');
-  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8; 
-
   const [showModal, setShowModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
@@ -60,12 +56,13 @@ export default function EmployeePage() {
       isOpen: true,
       title: 'Delete Employee?',
       message: "You won't be able to revert this! The employee data and photo will be permanently removed.",
-      isDanger: true, 
+      isDanger: true,
       onConfirm: async () => {
         try {
-          closeDialog(); 
-          await api.delete(`/employees/${id}`);
-          toast.success('Employee deleted successfully'); 
+          closeDialog();
+          await EmployeeService.delete(id);
+          
+          toast.success('Employee deleted successfully');
           mutate(); 
         } catch (err) {
           toast.error('Failed to delete employee');

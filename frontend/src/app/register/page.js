@@ -5,14 +5,13 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import api from '@/lib/axios';
 import Link from 'next/link';
+import AuthService from '@/services/auth.service';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ username: '', email: '', password: '' });
-  
-
   const { theme, toggleTheme } = useTheme();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,7 +20,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await api.post('/auth/register', form);
+      await AuthService.register(form); 
       toast.success('Registration successful! Please login.');
       router.push('/login');
     } catch (error) {
