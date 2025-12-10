@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
-import Header from '@/components/Header'; 
+import Sidebar from '@/components/common/Sidebar';
+import Header from '@/components/common/Header'; 
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardLayout({ children }) {
