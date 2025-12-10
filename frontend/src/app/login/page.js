@@ -165,7 +165,7 @@ export default function LoginPage() {
               <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                     <label className="text-secondary fw-bold x-small text-uppercase" style={{fontSize: '0.7rem', letterSpacing: '0.05em'}}>Password</label>
-                    <a href="#" className="text-decoration-none x-small text-primary fw-bold hover-opacity-75" style={{fontSize: '0.8rem'}}>Forgot?</a>
+                    <a href="/forgot-password" className="text-decoration-none x-small text-primary fw-bold hover-opacity-75" style={{fontSize: '0.8rem'}}>Forgot?</a>
                 </div>
                 <div className="input-group">
                     <span className="input-group-text bg-light border-light-subtle text-secondary ps-3"><i className="bi bi-lock"></i></span>
