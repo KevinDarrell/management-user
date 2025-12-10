@@ -2,7 +2,8 @@ import { Inter } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css"; 
 import "bootstrap-icons/font/bootstrap-icons.css"; 
 import "./globals.css"; 
-import { Toaster } from 'sonner'; 
+import { Toaster } from 'sonner';
+import BootstrapClient from "@/components/BootstrapClient";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <BootstrapClient /> 
         {children}
         <Toaster position="top-right" richColors />
       </body>
