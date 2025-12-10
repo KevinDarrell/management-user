@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: mysql:8.0
@@ -6,10 +8,53 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_HOST: '%'
     ports:
-      - "${MYSQL_LOCAL_PORT}:3306" 
+      - "${MYSQL_LOCAL_PORT}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: enterprise_backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    environment:
+      PORT: ${BACKEND_PORT}
+      DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@db:3306/${MYSQL_DATABASE}"
+      JWT_SECRET: ${JWT_SECRET}
+      UPLOAD_DIR: "public/uploads"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend/public/uploads:/app/public/uploads
+    networks:
+      - app_network
+
+  frontend:
+    build: ./frontend
+    container_name: enterprise_frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - backend
+    networks:
+      - app_network
 
 volumes:
   mysql_data:
+
+networks:
+  app_network:
+    driver: bridge
