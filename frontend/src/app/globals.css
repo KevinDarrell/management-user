@@ -164,3 +164,108 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+body, 
+div, 
+nav, 
+aside, 
+header, 
+footer, 
+.card, 
+.btn, 
+.form-control, 
+.table,
+span,
+h1, h2, h3, h4, h5, h6, p, i {
+
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+:root[data-theme='dark'] {
+  --bs-body-bg: #0f172a; 
+  --bs-body-color: #f8fafc; 
+  
+  --bg-surface: #1e293b; 
+  --bg-hover: #334155;   
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  --border-color: #334155; 
+}
+
+[data-theme='dark'] body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  background-image: radial-gradient(#334155 1px, transparent 1px); 
+}
+
+[data-theme='dark'] .text-dark {
+  color: #f8fafc !important; 
+}
+[data-theme='dark'] .text-secondary,
+[data-theme='dark'] .text-muted {
+  color: #94a3b8 !important; 
+}
+
+
+[data-theme='dark'] .sidebar-modern,
+[data-theme='dark'] .glass-header {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-main);
+}
+
+
+[data-theme='dark'] .card,
+[data-theme='dark'] .bg-white {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme='dark'] .btn-light,
+[data-theme='dark'] .bg-light,
+[data-theme='dark'] .badge.bg-light {
+    background-color: #334155 !important; 
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+
+[data-theme='dark'] .btn-light:hover {
+    background-color: #475569 !important; 
+}
+
+[data-theme='dark'] .form-control, 
+[data-theme='dark'] .form-select,
+[data-theme='dark'] .input-group-text {
+  background-color: #020617; 
+  border-color: var(--border-color);
+  color: #f8fafc;
+}
+[data-theme='dark'] .form-control::placeholder {
+    color: #64748b;
+}
+
+[data-theme='dark'] .table {
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+[data-theme='dark'] .table thead th {
+    background-color: #0f172a; 
+    color: #cbd5e1;
+    border-bottom: 1px solid var(--border-color);
+}
+[data-theme='dark'] .table-hover > tbody > tr:hover > * {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.05); 
+}
+
+[data-theme='dark'] .btn-white {
+    background-color: var(--bg-surface);
+    border-color: var(--border-color);
+    color: var(--text-main);
+}
+[data-theme='dark'] .btn-white:hover {
+    background-color: var(--bg-hover);
+}

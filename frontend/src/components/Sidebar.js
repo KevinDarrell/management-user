@@ -20,7 +20,7 @@ export default function Sidebar({ isMobile, closeMobileMenu }) {
   const isActive = (path) => pathname === path;
 
   return (
-    <div className="d-flex flex-column h-100 p-3 sidebar-modern">
+    <div className="d-flex flex-column h-100 p-3 sidebar-modern transition-colors">
     
       <div className="d-flex align-items-center mb-5 px-2 mt-2">
         <div className="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center me-3 shadow-sm" style={{ width: '36px', height: '36px' }}>

@@ -5,12 +5,13 @@ import "./globals.css";
 import { Toaster } from 'sonner';
 import BootstrapClient from "@/components/BootstrapClient";
 import { NotificationProvider } from '@/context/NotificationContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Enterprise Employee",
-  description: "Modern Management System",
+  title: "HR System",
+  description: "Modern HR System",
 };
 
 export default function RootLayout({ children }) {
@@ -18,9 +19,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <BootstrapClient /> 
+        <ThemeProvider>
         <NotificationProvider>
         {children}
         </NotificationProvider>
+        </ThemeProvider>
         <Toaster position="top-right" richColors />
       </body>
     </html>

@@ -1,13 +1,13 @@
 'use client';
-import { useState, useEffect, useRef, forwardRef } from 'react'; 
+import { useState, useEffect, useRef, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Dropdown } from 'react-bootstrap'; 
 import { useNotification } from '@/context/NotificationContext';
+import { useTheme } from '@/context/ThemeContext'; 
 
 
 const AnimatedMenu = forwardRef(({ children, style, className, 'aria-labelledby': labeledBy, show, close, align, ...props }, ref) => {
-
     return (
         <motion.div
             ref={ref}
@@ -20,9 +20,7 @@ const AnimatedMenu = forwardRef(({ children, style, className, 'aria-labelledby'
         </motion.div>
     );
 });
-
 AnimatedMenu.displayName = 'AnimatedMenu';
-
 
 export default function Header({ toggleMobileMenu }) {
   const router = useRouter();
@@ -30,11 +28,14 @@ export default function Header({ toggleMobileMenu }) {
   const [user, setUser] = useState({ username: 'Admin', email: 'admin@company.com' });
   const notifRef = useRef(null);
   
+
   const { notifications, markAllRead } = useNotification();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) setUser(JSON.parse(storedUser));
+
 
     function handleClickOutside(event) {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
@@ -54,10 +55,16 @@ export default function Header({ toggleMobileMenu }) {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="glass-header px-4 py-3 d-flex align-items-center justify-content-between sticky-top z-3 bg-white bg-opacity-80 backdrop-blur border-bottom">
-
+    <header className="glass-header px-4 py-3 d-flex align-items-center justify-content-between sticky-top z-3 bg-white bg-opacity-80 backdrop-blur border-bottom transition-colors">
+      
+   
       <div className="d-flex align-items-center gap-3">
-        <motion.button whileTap={{ scale: 0.9 }} className="btn btn-light border-0 bg-secondary bg-opacity-10 d-xl-none shadow-none d-flex align-items-center justify-content-center rounded-circle" style={{width: '40px', height: '40px'}} onClick={toggleMobileMenu}>
+        <motion.button 
+            whileTap={{ scale: 0.9 }} 
+            className="btn btn-light border-0 bg-secondary bg-opacity-10 d-xl-none shadow-none d-flex align-items-center justify-content-center rounded-circle" 
+            style={{width: '40px', height: '40px'}} 
+            onClick={toggleMobileMenu}
+        >
             <i className="bi bi-list fs-5 text-dark"></i>
         </motion.button>
         <div>
@@ -65,14 +72,32 @@ export default function Header({ toggleMobileMenu }) {
            <small className="text-muted d-none d-sm-block" style={{fontSize: '0.75rem'}}>Welcome back, {user.username}</small>
         </div>
       </div>
+      
 
       <div className="d-flex align-items-center gap-3" style={{ height: '42px' }}> 
+         
+     
+         <motion.button
+             whileTap={{ scale: 0.9 }}
+             onClick={toggleTheme}
+             className="btn border-0 rounded-circle d-flex align-items-center justify-content-center transition-colors header-icon-btn hover-bg-gray"
+             style={{ width: '42px', height: '42px' }}
+             title="Toggle Theme"
+          >
+             {theme === 'light' ? (
+                 <i className="bi bi-moon-stars text-secondary fs-5"></i>
+             ) : (
+                 <i className="bi bi-sun-fill text-warning fs-5"></i>
+             )}
+          </motion.button>
+
 
          <div className="position-relative d-flex align-items-center" ref={notifRef}>
             <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`btn border-0 rounded-circle transition-colors header-icon-btn ${showNotif ? 'bg-primary text-white shadow-primary-sm' : 'bg-secondary bg-opacity-10 text-secondary hover-bg-gray'}`}
+                style={{ width: '42px', height: '42px' }}
                 onClick={() => setShowNotif(!showNotif)}
             >
                 <i className={`bi ${showNotif ? 'bi-bell-fill' : 'bi-bell'} fs-5`}></i>
@@ -129,12 +154,14 @@ export default function Header({ toggleMobileMenu }) {
             </AnimatePresence>
          </div>
 
+
          <Dropdown align="end" className="d-flex align-items-center">
             <Dropdown.Toggle as="div" className="cursor-pointer no-caret user-select-none d-flex align-items-center justify-content-center" id="profile-dropdown">
                 <motion.div 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="header-icon-btn rounded-circle border bg-white shadow-sm hover-shadow-md transition-all position-relative"
+                    style={{ width: '42px', height: '42px' }}
                 >
                     <div className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" 
                         style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', fontSize: '1.1rem' }}>
@@ -146,7 +173,7 @@ export default function Header({ toggleMobileMenu }) {
 
 
             <Dropdown.Menu 
-                as={AnimatedMenu} 
+                as={AnimatedMenu}
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -157,6 +184,11 @@ export default function Header({ toggleMobileMenu }) {
                 <div className="px-4 py-3 bg-light bg-opacity-50 border-bottom">
                     <p className="mb-0 fw-bold text-dark">{user.username}</p>
                     <p className="mb-0 x-small text-muted text-truncate">{user.email}</p>
+                    <div className="mt-2">
+                         <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2">
+                            <i className="bi bi-circle-fill me-1" style={{fontSize: '0.5rem'}}></i> Online
+                        </span>
+                    </div>
                 </div>
                 <div className="p-2">
                     <Dropdown.Item href="/dashboard/users" className="rounded-3 py-2 px-3 mb-1 d-flex align-items-center gap-3 hover-bg-light transition-colors">
