@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner'; 
 import { motion } from 'framer-motion'; 
-import api from '@/app/lib/axios';
+import api from '@/lib/axios';
 import Link from 'next/link';
 
 export default function LoginPage() {
