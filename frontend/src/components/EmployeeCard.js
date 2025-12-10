@@ -3,67 +3,58 @@ import { motion } from 'framer-motion';
 
 export default function EmployeeCard({ employee, onEdit, onDelete }) {
   const API_URL = 'http://localhost:5000'; 
-  const imageUrl = employee.photo 
-    ? `${API_URL}${employee.photo}` 
-    : 'https://ui-avatars.com/api/?name=' + employee.name + '&background=random'; 
+  
+  const getImageUrl = () => {
+    if (!employee.photo) {
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.name)}&background=random&color=fff&size=128`;
+    }
+    return `${API_URL}${employee.photo}`;
+  };
 
   return (
-    <motion.div 
-      layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.2 }}
-      className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4"
-    >
-      <div className="card card-hover h-100 border-0 bg-white p-3">
+
+    <div className="card h-100 border-0 shadow-sm overflow-hidden bg-white group" style={{borderRadius: '16px'}}>
         
-        {/* Header: Photo & Action */}
-        <div className="d-flex justify-content-between align-items-start mb-3">
-            <div className="position-relative">
+        <div className="card-body text-center p-4 d-flex flex-column align-items-center">
+
+            <div className="mb-3 position-relative flex-shrink-0" style={{ width: '80px', height: '80px' }}>
                 <img 
-                    src={imageUrl} 
+                    src={getImageUrl()} 
                     alt={employee.name} 
-                    className="rounded-circle object-fit-cover shadow-sm border border-2 border-white"
-                    style={{ width: '64px', height: '64px' }}
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/64'; }} 
+                    className="w-100 h-100 rounded-circle object-fit-cover border border-4 border-light shadow-sm"
+                    onError={(e) => { 
+                      e.target.onerror = null; 
+                      e.target.src = `https://ui-avatars.com/api/?name=${employee.name}`;
+                    }}
                 />
-                <span className="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-1" 
-                      style={{ width: '12px', height: '12px' }}></span>
             </div>
+
+            <h5 className="fw-bold text-dark mb-1 w-100 text-truncate">{employee.name}</h5>
             
-            <div className="dropdown">
-                <button className="btn btn-light btn-sm rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown">
-                    <i className="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul className="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2">
-                    <li>
-                        <button onClick={() => onEdit(employee)} className="dropdown-item rounded-2 py-2 mb-1 d-flex align-items-center gap-2">
-                            <i className="bi bi-pencil-square text-primary"></i> Edit Data
-                        </button>
-                    </li>
-                    <li>
-                        <button onClick={() => onDelete(employee.id)} className="dropdown-item rounded-2 py-2 d-flex align-items-center gap-2 text-danger hover-bg-danger-light">
-                            <i className="bi bi-trash"></i> Delete
-                        </button>
-                    </li>
-                </ul>
+            <span className="badge bg-light text-secondary border fw-medium px-3 py-1 rounded-pill mb-3 text-truncate" style={{maxWidth: '100%'}}>
+                {employee.position}
+            </span>
+
+            <small className="text-muted mb-3 d-block">
+                <i className="bi bi-building me-1"></i> {employee.department || 'General'}
+            </small>
+
+            <div className="mt-auto">
+                <a href={`tel:${employee.phone}`} className="btn btn-sm btn-light rounded-pill px-3 w-100 text-truncate">
+                    <i className="bi bi-telephone-fill me-2 text-primary"></i>
+                    {employee.phone}
+                </a>
             </div>
         </div>
 
-        <div className="mt-2">
-            <h6 className="fw-bold text-dark mb-1">{employee.name}</h6>
-            <p className="text-muted small mb-3">{employee.position}</p>
-            
-            <div className="d-flex align-items-center gap-2 p-2 bg-light rounded-3">
-                <div className="bg-white p-1 rounded-circle shadow-sm d-flex justify-content-center align-items-center" style={{width: '24px', height: '24px'}}>
-                    <i className="bi bi-telephone-fill text-primary" style={{fontSize: '10px'}}></i>
-                </div>
-                <span className="small fw-medium text-secondary">{employee.phone}</span>
-            </div>
+        <div className="card-footer bg-white border-top p-0 d-flex">
+            <button onClick={() => onEdit(employee)} className="btn btn-link text-decoration-none flex-grow-1 border-end py-3 text-secondary hover-bg-light" style={{fontSize: '0.9rem'}}>
+                <i className="bi bi-pencil-square me-1"></i> Edit
+            </button>
+            <button onClick={() => onDelete(employee.id)} className="btn btn-link text-decoration-none flex-grow-1 py-3 text-danger hover-bg-light" style={{fontSize: '0.9rem'}}>
+                <i className="bi bi-trash me-1"></i> Delete
+            </button>
         </div>
-
-      </div>
-    </motion.div>
+    </div>
   );
 }

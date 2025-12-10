@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap'; 
 import { toast } from 'sonner';
 import api from '@/lib/axios';
+import { useNotification } from '@/context/NotificationContext';
 
 export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToEdit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +12,7 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
   const [formData, setFormData] = useState({
     name: '',
     position: '',
+    departemen: '',
     phone: '',
     photo: null
   });
@@ -18,7 +20,7 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
   useEffect(() => {
     if (show) {
       if (employeeToEdit) {
-        // Mode Edit
+    
         setFormData({
           name: employeeToEdit.name,
           position: employeeToEdit.position,
@@ -44,6 +46,7 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
     if (file) {
       if (file.size > 300 * 1024) { 
         toast.error('File too large! Max 300KB.');
+        e.target.value = null;
         return;
       }
       setFormData({ ...formData, photo: file });
@@ -51,36 +54,58 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
     }
   };
 
+  const { addNotification } = useNotification();
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      const payload = new FormData();
-      payload.append('name', formData.name);
-      payload.append('position', formData.position);
-      payload.append('phone', formData.phone);
-      if (formData.photo) {
-        payload.append('photo', formData.photo);
-      }
-
-      if (employeeToEdit) {
-        await api.put(`/employees/${employeeToEdit.id}`, payload);
-        toast.success('Employee updated successfully!');
-      } else {
-        await api.post('/employees', payload);
-        toast.success('New employee added!');
-      }
-
-      onSuccess();
-      onHide(); 
-    } catch (error) {
-      const msg = error.response?.data?.meta?.message || 'Something went wrong';
-      toast.error(msg);
-    } finally {
-      setIsLoading(false);
+  try {
+    const payload = new FormData();
+    payload.append('name', formData.name);
+    payload.append('position', formData.position);
+    payload.append('phone', formData.phone);
+    payload.append('department', formData.department || 'General'); 
+    
+    if (formData.photo) {
+      payload.append('photo', formData.photo);
     }
-  };
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data', 
+      },
+    };
+
+    if (employeeToEdit) {
+      await api.put(`/employees/${employeeToEdit.id}`, payload, config);
+      toast.success('Employee updated successfully!');
+      addNotification(
+            'Employee Updated', 
+            `${formData.name} details have been updated.`, 
+            'info'
+        );
+    } else {
+   
+      await api.post('/employees', payload, config);
+      toast.success('New employee added!');
+      addNotification(
+            'New Employee Added', 
+            `${formData.name} has joined the ${formData.department || 'General'} department.`, 
+            'success'
+        );
+    }
+
+    onSuccess();
+    onHide();
+  } catch (error) {
+    console.error("Upload Error:", error);
+    const msg = error.response?.data?.meta?.message || 'Upload failed. Check file size/format.';
+    toast.error(msg);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <Modal show={show} onHide={onHide} centered backdrop="static" className="fade-modal">
@@ -121,6 +146,17 @@ export default function EmployeeFormModal({ show, onHide, onSuccess, employeeToE
             <label className="form-label small fw-bold text-uppercase text-secondary">Position</label>
             <input type="text" name="position" className="form-control" required value={formData.position} onChange={handleChange} placeholder="e.g. Software Engineer" />
           </div>
+
+          <div className="mb-3">
+            <label className="text-label">Department</label>
+            <select name="department" className="form-select" value={formData.department} onChange={handleChange}>
+                <option value="IT">Information Technology</option>
+                <option value="HR">Human Resources</option>
+                <option value="Finance">Finance</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Operations">Operations</option>
+            </select>
+            </div>  
 
           <div className="mb-3">
             <label className="form-label small fw-bold text-uppercase text-secondary">Phone Number</label>

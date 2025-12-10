@@ -20,6 +20,7 @@ const createEmployee = async (data, file) => {
     data: {
         name: data.name,
         position: data.position,
+        department: data.department || 'General',
         phone: data.phone,
         photo: photoUrl
     }
@@ -44,6 +45,7 @@ const updateEmployee = async (id, data, file) => {
     data: {
       name: data.name,
       position: data.position,
+      department: data.department,
       phone: data.phone,
       photo: photoUrl
     }

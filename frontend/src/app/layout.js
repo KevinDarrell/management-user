@@ -4,6 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css"; 
 import { Toaster } from 'sonner';
 import BootstrapClient from "@/components/BootstrapClient";
+import { NotificationProvider } from '@/context/NotificationContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <BootstrapClient /> 
+        <NotificationProvider>
         {children}
+        </NotificationProvider>
         <Toaster position="top-right" richColors />
       </body>
     </html>

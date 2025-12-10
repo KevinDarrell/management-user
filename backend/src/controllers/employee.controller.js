@@ -12,9 +12,6 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    if (!req.file) {
-      return response.error(res, 400, 'Photo is required (JPG/JPEG max 300KB)');
-    }
 
     const result = await employeeService.createEmployee(req.body, req.file);
     return response.success(res, 201, 'Employee created successfully', result);
