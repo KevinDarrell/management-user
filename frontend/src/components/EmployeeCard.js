@@ -1,60 +1,68 @@
-'use client';
+import { useTheme } from '@/context/ThemeContext';
 import { motion } from 'framer-motion';
 
-export default function EmployeeCard({ employee, onEdit, onDelete }) {
-  const API_URL = 'http://localhost:5000'; 
+export default function EmployeeCard({ employee, onEdit, onDelete, onToggleStatus }) {
+  const { theme } = useTheme();
   
-  const getImageUrl = () => {
-    if (!employee.photo) {
-      return `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.name)}&background=random&color=fff&size=128`;
-    }
-    return `${API_URL}${employee.photo}`;
-  };
+  const cardBg = theme === 'dark' ? 'bg-surface border-secondary' : 'bg-white border-light-subtle';
+  const textMain = theme === 'dark' ? 'text-white' : 'text-dark';
 
   return (
+    <div className={`card h-100 border shadow-sm rounded-4 overflow-hidden ${cardBg} transition-colors position-relative`}>
+      
+      
+      <div className="position-absolute top-0 end-0 m-3">
+          <span className={`badge rounded-pill border ${employee.isActive ? 'bg-success bg-opacity-10 text-success border-success' : 'bg-secondary bg-opacity-10 text-secondary border-secondary'}`}>
+             {employee.isActive ? 'Active' : 'Inactive'}
+          </span>
+      </div>
 
-    <div className="card h-100 border-0 shadow-sm overflow-hidden bg-white group" style={{borderRadius: '16px'}}>
-        
-        <div className="card-body text-center p-4 d-flex flex-column align-items-center">
-
-            <div className="mb-3 position-relative flex-shrink-0" style={{ width: '80px', height: '80px' }}>
+      <div className="card-body text-center p-4 pt-5">
+      
+        <div className="position-relative d-inline-block mb-3">
+            <div className={`p-1 rounded-circle border border-2 ${employee.isActive ? 'border-success' : 'border-secondary grayscale'}`}>
                 <img 
-                    src={getImageUrl()} 
+                    src={employee.photo ? `http://localhost:5000${employee.photo}` : `https://ui-avatars.com/api/?name=${employee.name}&background=random`} 
+                    className="rounded-circle" 
+                    width="80" height="80" 
+                    style={{ objectFit: 'cover', filter: employee.isActive ? 'none' : 'grayscale(100%)' }}
                     alt={employee.name} 
-                    className="w-100 h-100 rounded-circle object-fit-cover border border-4 border-light shadow-sm"
-                    onError={(e) => { 
-                      e.target.onerror = null; 
-                      e.target.src = `https://ui-avatars.com/api/?name=${employee.name}`;
-                    }}
+                    onError={(e) => {e.target.src=`https://ui-avatars.com/api/?name=${employee.name}`}}
                 />
             </div>
-
-            <h5 className="fw-bold text-dark mb-1 w-100 text-truncate">{employee.name}</h5>
-            
-            <span className="badge bg-light text-secondary border fw-medium px-3 py-1 rounded-pill mb-3 text-truncate" style={{maxWidth: '100%'}}>
-                {employee.position}
-            </span>
-
-            <small className="text-muted mb-3 d-block">
-                <i className="bi bi-building me-1"></i> {employee.department || 'General'}
-            </small>
-
-            <div className="mt-auto">
-                <a href={`tel:${employee.phone}`} className="btn btn-sm btn-light rounded-pill px-3 w-100 text-truncate">
-                    <i className="bi bi-telephone-fill me-2 text-primary"></i>
-                    {employee.phone}
-                </a>
-            </div>
         </div>
 
-        <div className="card-footer bg-white border-top p-0 d-flex">
-            <button onClick={() => onEdit(employee)} className="btn btn-link text-decoration-none flex-grow-1 border-end py-3 text-secondary hover-bg-light" style={{fontSize: '0.9rem'}}>
-                <i className="bi bi-pencil-square me-1"></i> Edit
-            </button>
-            <button onClick={() => onDelete(employee.id)} className="btn btn-link text-decoration-none flex-grow-1 py-3 text-danger hover-bg-light" style={{fontSize: '0.9rem'}}>
-                <i className="bi bi-trash me-1"></i> Delete
-            </button>
+        <h5 className={`fw-bold mb-1 ${textMain}`}>{employee.name}</h5>
+        <p className="text-secondary small mb-3">{employee.position}</p>
+
+        <div className={`d-inline-flex align-items-center px-3 py-1 rounded-pill small border ${theme === 'dark' ? 'bg-dark border-secondary text-secondary' : 'bg-light border-light-subtle text-secondary'}`}>
+            <i className="bi bi-building me-2"></i> {employee.department}
         </div>
+      </div>
+
+      
+      <div className={`card-footer p-3 border-top d-flex justify-content-between align-items-center ${theme === 'dark' ? 'border-secondary' : 'bg-light bg-opacity-50'}`}>
+          
+     
+          <div className="form-check form-switch mb-0" title="Toggle Status">
+              <input 
+                  className="form-check-input cursor-pointer" 
+                  type="checkbox" 
+                  checked={employee.isActive}
+                  onChange={() => onToggleStatus(employee)}
+                  style={{ transform: 'scale(1.2)' }}
+              />
+          </div>
+
+          <div className="d-flex gap-2">
+             <button onClick={() => onEdit(employee)} className="btn btn-sm btn-white border shadow-sm" title="Edit">
+                 <i className="bi bi-pencil-fill text-primary"></i>
+             </button>
+             <button onClick={() => onDelete(employee.id)} className="btn btn-sm btn-white border shadow-sm" title="Delete">
+                 <i className="bi bi-trash-fill text-danger"></i>
+             </button>
+          </div>
+      </div>
     </div>
   );
 }

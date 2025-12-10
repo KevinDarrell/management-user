@@ -58,4 +58,14 @@ const deleteEmployee = async (id) => {
   return await prisma.employee.delete({ where: { id: parseInt(id) } });
 };
 
-module.exports = { getAllEmployees, createEmployee, updateEmployee, deleteEmployee };
+const updateStatus = async (id, isActive) => {
+  const employee = await prisma.employee.findUnique({ where: { id: parseInt(id) } });
+  if (!employee) throw new Error('Employee not found');
+
+  return await prisma.employee.update({
+    where: { id: parseInt(id) },
+    data: { isActive }
+  });
+};
+
+module.exports = { getAllEmployees, createEmployee, updateEmployee, deleteEmployee, updateStatus };

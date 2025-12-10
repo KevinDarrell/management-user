@@ -10,6 +10,7 @@ router.use(verifyToken);
 router.get('/', employeeController.findAll);
 router.post('/', upload.single('photo'), validateEmployee, employeeController.create);
 router.put('/:id', upload.single('photo'), validateEmployee, employeeController.update);
+router.patch('/:id/status', employeeController.updateStatus);
 router.delete('/:id', employeeController.remove);
 
 module.exports = router;

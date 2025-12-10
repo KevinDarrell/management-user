@@ -11,6 +11,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ username: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -137,20 +138,36 @@ export default function LoginPage() {
               </div>
 
               <div className="mb-4">
-                <label className="text-secondary fw-bold x-small text-uppercase mb-2">Password</label>
-                <div className="input-group">
-                    <span className={`input-group-text border-end-0 ps-3 ${theme === 'dark' ? 'bg-dark border-secondary text-light' : 'bg-light border-light-subtle text-secondary'}`}
-                          style={{backgroundColor: theme === 'dark' ? '#020617' : '#f8fafc', borderColor: borderCard}}>
-                        <i className="bi bi-lock"></i>
-                    </span>
-                    <input 
-                        type="password" name="password" 
-                        className="form-control form-control-lg border-start-0 fs-6" 
-                        style={{backgroundColor: theme === 'dark' ? '#020617' : '#f8fafc', borderColor: borderCard, color: theme === 'dark' ? '#fff' : '#000'}}
-                        placeholder="••••••••" value={form.password} onChange={handleChange} required 
-                    />
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="text-secondary fw-bold x-small text-uppercase">Password</label>
+                  <Link href="/forgot-password" className="text-decoration-none x-small text-primary fw-bold hover-opacity-75">Forgot?</Link>
                 </div>
+                <div className="input-group">
+                  <span className={`input-group-text border-end-0 ps-3 ${theme === 'dark' ? 'bg-dark border-secondary text-light' : 'bg-light border-light-subtle text-secondary'}`}
+                  style={{backgroundColor: theme === 'dark' ? '#020617' : '#f8fafc', borderColor: borderCard}}>
+                  <i className="bi bi-lock"></i>             
+                </span>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  name="password" 
+                  className="form-control form-control-lg border-start-0 border-end-0 fs-6" 
+                  style={{backgroundColor: theme === 'dark' ? '#020617' : '#f8fafc', borderColor: borderCard, color: theme === 'dark' ? '#fff' : '#000'}}
+                  placeholder="••••••••" 
+                  value={form.password} 
+                  onChange={handleChange} 
+                  required 
+                  />
+                  <button 
+                  type="button"
+                  className={`input-group-text border-start-0 pe-3 cursor-pointer ${theme === 'dark' ? 'bg-dark border-secondary text-secondary' : 'bg-light border-light-subtle text-secondary'}`}
+                  style={{backgroundColor: theme === 'dark' ? '#020617' : '#f8fafc', borderColor: borderCard}}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <i className={`bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}></i>
+                </button>
               </div>
+            </div>
+    
 
               <div className="d-grid mb-4 pt-2">
                 <button type="submit" className="btn btn-primary btn-lg py-3 rounded-3 fw-bold shadow-sm">

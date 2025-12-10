@@ -24,6 +24,11 @@ const EmployeeService = {
     return response.data;
   },
 
+  updateStatus: async (id, isActive) => {
+    const response = await api.patch(`/employees/${id}/status`, { isActive });
+    return response.data;
+  },
+
   delete: async (id) => {
     const response = await api.delete(`/employees/${id}`);
     return response.data;

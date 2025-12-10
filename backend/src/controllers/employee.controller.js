@@ -22,4 +22,11 @@ const remove = catchAsync (async(req, res) => {
     return response.success(res, 200, 'Employee deleted successfully');
 });
 
-module.exports = { findAll, create, update, remove };
+const updateStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+  const result = await employeeService.updateStatus(id, isActive);
+  return response.success(res, 200, 'Employee status updated', result);
+});
+
+module.exports = { findAll, create, update, remove, updateStatus };

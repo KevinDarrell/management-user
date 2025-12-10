@@ -26,6 +26,7 @@ model Employee {
   department String @default("General")
   phone     String
   photo     String?
+  isActive  Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
