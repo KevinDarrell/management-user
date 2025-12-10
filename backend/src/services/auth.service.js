@@ -1,55 +1,41 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../config/prisma');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
 
-const register = async (username, email, password) => {
-    const existingUser = await prisma.user.findFirst({
-        where: { 
-            OR: [{ username }, { email }] }
-    });
 
-    if(existingUser) {
-        throw new Error('Username or Email already exists');
-    }
+const register = async (data) => {
+  const { username, email, password } = data;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await prisma.user.create({
-        data: {
-            username,
-            email,
-            password: hashedPassword,
-        }
-    });
-    return { id: newUser.id, username: newUser.username, email: newUser.email };
-};
-
-const login = async (username, password) => {
- 
-  const user = await prisma.user.findUnique({
-    where: { username }
+  const existingUser = await prisma.user.findFirst({
+    where: { OR: [{ username }, { email }] }
   });
 
-  if (!user) {
-    throw new Error('Invalid username or password');
-  }
+  if (existingUser) throw new Error('Username or Email already exists');
 
-  
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  return await prisma.user.create({
+    data: { username, email, password: hashedPassword, isActive: true },
+    select: { id: true, username: true, email: true, isActive: true, createdAt: true }
+  });
+};
+
+const login = async (data) => {
+  const { username, password } = data;
+
+  const user = await prisma.user.findUnique({ where: { username } });
+  if (!user) throw new Error('User not found');
+  if (!user.isActive) throw new Error('Account is inactive. Please contact admin.');
+
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    throw new Error('Invalid username or password');
-  }
+  if (!isMatch) throw new Error('Invalid credentials');
 
-  
-  const token = jwt.sign(
-    { id: user.id, username: user.username },
-    process.env.JWT_SECRET,
-    { expiresIn: '1d' } 
-  );
+  const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1d' });
 
   return { 
-    user: { id: user.id, username: user.username, email: user.email }, 
-    token 
+    token, 
+    user: { id: user.id, username: user.username, email: user.email } 
   };
 };
 

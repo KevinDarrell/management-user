@@ -1,35 +1,21 @@
 const authService = require('../services/auth.service');
 const response = require('../utils/response');
+const catchAsync = require('../utils/catchAsync');
 
-const register = async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-    
-    if (!username || !email || !password) {
-      return response.error(res, 400, 'All fields are required');
-    }
-
-    const result = await authService.register(username, email, password);
-    return response.success(res, 201, 'User registered successfully', result);
-  } catch (err) {
-   
-    return response.error(res, 400, err.message);
+const register = catchAsync(async (req, res) => {
+  if (!req.body.username || !req.body.password) {
+      return response.error(res, 400, 'Username and password required');
   }
-};
+  const user = await authService.register(req.body);
+  return response.success(res, 201, 'User registered successfully', user);
+});
 
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      return response.error(res, 400, 'Username and password are required');
-    }
-
-    const result = await authService.login(username, password);
-    return response.success(res, 200, 'Login successful', result);
-  } catch (err) {
-    return response.error(res, 401, err.message);
+const login = catchAsync(async (req, res) => {
+  if (!req.body.username || !req.body.password) {
+      return response.error(res, 400, 'Username and password required');
   }
-};
+  const result = await authService.login(req.body);
+  return response.success(res, 200, 'Login successful', result);
+});
 
 module.exports = { register, login };
