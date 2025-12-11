@@ -1,18 +1,53 @@
-# 🏢 Enterprise Employee Management System
+<div align="center">
+  <h1>🏢 Employee Management System</h1>
 
-![Project Status](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+  <p>
+    <img src="https://img.shields.io/badge/status-active-success.svg?style=flat-square" alt="Status" />
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" />
+    <img src="https://img.shields.io/badge/docker-ready-blue?logo=docker&logoColor=white&style=flat-square" alt="Docker" />
+  </p>
 
-A robust, full-stack **Employee Management System** architected for scalability. Built with **Next.js 14**, **Express**, **Prisma**, and **MySQL**.
+  <p>
+    A robust, full-stack <strong>Employee Management System</strong> architected for scalability and maintainability. 
+    Built with <strong>Next.js</strong>, <strong>Express</strong>, <strong>Prisma</strong>, and <strong>MySQL</strong>.
+    <br/>
+    Featuring a complete <strong>Dockerized</strong> environment for instant deployment.
+  </p>
+</div>
 
 ---
 
 ## 🚀 Key Features
 
-* **Enterprise Architecture:** Clean Controller-Service-Repository pattern.
-* **Security:** JWT Auth with HttpOnly cookies & Role-based access.
-* **UI/UX:** Modern Next.js App Router with Dark Mode support.
-* **DevOps:** Full Docker support for easy deployment.
+### 🛡️ **Enterprise-Grade Architecture**
+* **Service-Repository Pattern:** Strict separation between Controller (Interface), Service (Business Logic), and Repository (Data Access).
+* **Centralized Configuration:** Environment variables and constants are managed centrally for security.
+* **Robust Validation:** Dedicated Validation Layer using custom validators to ensure data integrity before reaching the controller.
+
+### 🔐 **Security & Authentication**
+* **JWT Authentication:** Secure stateless authentication.
+* **Password Encryption:** Strong hashing using `bcrypt`.
+* **Protected Routes:** Middleware to protect sensitive endpoints and frontend pages.
+
+### 🎨 **Modern UI/UX**
+* **Next.js App Router:** Utilizing the latest React features.
+* **Dark Mode Support:** System-wide theme switching (Light/Dark).
+* **Interactive Components:** Toast notifications (`sonner`), and smooth Framer Motion animations.
+
+### 🐳 **DevOps & Deployment**
+* **Docker Compose:** Orchestrates Frontend, Backend, and Database with a single command.
+* **Database Migrations:** Prisma migrations managed within the container environment.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+| :--- | :--- |
+| **Frontend** | [Next.js 14](https://nextjs.org/), [React](https://react.dev/), [Bootstrap 5](https://getbootstrap.com/), [SWR](https://swr.vercel.app/), [Framer Motion](https://www.framer.com/motion/) |
+| **Backend** | [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/), [Multer](https://github.com/expressjs/multer) |
+| **Database** | [MySQL 8](https://www.mysql.com/), [Prisma ORM](https://www.prisma.io/) |
+| **Tools** | [Docker](https://www.docker.com/), [Git](https://git-scm.com/), [VS Code](https://code.visualstudio.com/) |
 
 ---
 
@@ -22,7 +57,7 @@ You can run this application using **Docker (Recommended)** OR **Manually (Node.
 
 ### 📋 Prerequisites
 * **For Docker:** Docker Desktop installed.
-* **For Manual:** Node.js (v18+) and MySQL installed locally.
+* **For Manual:** Node.js (v22) and MySQL installed locally.
 
 ---
 
@@ -31,8 +66,8 @@ You can run this application using **Docker (Recommended)** OR **Manually (Node.
 
 1.  **Clone the repository**
     ```bash
-    git clone <LINK_REPO_ANDA>
-    cd enterprise-employee-app
+    git clone <url-repository>
+    cd the root file
     ```
 
 2.  **Setup Environment**
@@ -99,21 +134,27 @@ You can run this application using **Docker (Recommended)** OR **Manually (Node.
 ### Backend (`/backend`)
 ```text
 src/
-├── config/         # Config & Env Vars
-├── controllers/    # Request Handling
-├── services/       # Business Logic
-├── validators/     # Input Validation
-└── routes/         # API Routes
+src/
+├── config/         # Environment & Database config
+├── controllers/    # Request handlers (Input/Output only)
+├── middlewares/    # Auth checks & File Uploads
+├── routes/         # API Endpoint definitions
+├── services/       # Business Logic & DB Interactions
+├── utils/          # Standardized Response & Error Handling
+└── validators/     # Input validation logic
 ```
 ### Frontend (`/frontend`)
 ```text
 src/
-├── app/            # Next.js Pages
-├── components/     # Reusable UI
-│   ├── auth/       # Login/Register Screens
-│   └── common/     # Sidebar, Header, etc
-├── services/       # API Integration
-└── context/        # Theme & Auth Context
+├── app/            # Next.js App Router Pages
+├── components/     # Reusable UI Components
+│   ├── auth/       # Login/Register Layouts
+│   ├── common/     # Shared components (Sidebar, Header)
+│   ├── dashboard/  # Dashboard widgets
+│   └── ...
+├── context/        # Global State (Theme, Auth)
+├── lib/            # Axios Interceptors & Constants
+└── services/       # API Integration Layer
 ```
 
 ---
