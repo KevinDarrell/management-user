@@ -75,7 +75,7 @@ You can run this application using **Docker (Recommended)** OR **Manually (Node.
     ```bash
     cp .env.example .env
     ```
-    *Note: The default values in `.env.example` are compatible with Docker.*
+    *Note: The default values in `.env.example` are compatible with Docker (port 3307).*
 
 3.  **Run the App**
     ```bash
@@ -102,12 +102,19 @@ You can run this application using **Docker (Recommended)** OR **Manually (Node.
 
 2.  **Configure Environment**
     * Copy `.env.example` to `.env`.
-    * **Important:** Open `.env` and make sure `DB_HOST` matches your local config.
-    * Usually, change: `MYSQL_LOCAL_PORT=3307` to `3306` (if using standard MySQL).
+    * **Important:** Change `MYSQL_LOCAL_PORT` to `3306`.
+    * Change `DATABASE_URL` to match your local config (e.g., remove password if using XAMPP defaults).
+    * Example: `mysql://root:@localhost:3306/db_management_user`
 
 3.  **Setup Backend**
     ```bash
     cd backend
+    # [IMPORTANT] Copy env from root to backend folder
+    # Windows:
+    copy ..\.env .env
+    # Mac/Linux:
+    cp ../.env .env
+    
     npm install
     
     # Run Migration to create tables
