@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🏢 Employee Management System</h1>
+  <h1>🏢 User Management System</h1>
 
   <p>
     <img src="https://img.shields.io/badge/status-active-success.svg?style=flat-square" alt="Status" />
@@ -8,7 +8,7 @@
   </p>
 
   <p>
-    A robust, full-stack <strong>Employee Management System</strong> architected for scalability and maintainability. 
+    A robust, full-stack <strong>User Management System</strong> architected for scalability and maintainability. 
     Built with <strong>Next.js</strong>, <strong>Express</strong>, <strong>Prisma</strong>, and <strong>MySQL</strong>.
     <br/>
     Featuring a complete <strong>Dockerized</strong> environment for instant deployment.
@@ -133,7 +133,6 @@ You can run this application using **Docker (Recommended)** OR **Manually (Node.
 
 ### Backend (`/backend`)
 ```text
-src/
 src/
 ├── config/         # Environment & Database config
 ├── controllers/    # Request handlers (Input/Output only)
